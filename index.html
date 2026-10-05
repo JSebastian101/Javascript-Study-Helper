@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Herramienta de consulta para recordar métodos, operadores y conceptos de JavaScript ya estudiados." />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23f7df1e'/><text x='16' y='22' font-family='monospace' font-size='14' font-weight='700' text-anchor='middle' fill='%23111'>JS</text></svg>" />
+    <title>JavaScript Helper</title>
+    <script>
+      try {
+        const saved = localStorage.getItem('jsh-theme')
+        const dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches
+        if (dark) document.documentElement.classList.add('dark')
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
