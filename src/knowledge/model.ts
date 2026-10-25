@@ -18,7 +18,7 @@ export type ConceptKind =
   | 'concept' // ideas: qué es un string, coerción
   | 'pattern' // combinación de herramientas conocidas: aleatorio entre min y max
 
-export type AccentName = 'emerald' | 'sky' | 'violet' | 'amber' | 'rose' | 'cyan'
+export type AccentName = 'emerald' | 'sky' | 'violet' | 'amber' | 'rose' | 'cyan' | 'indigo' | 'fuchsia'
 
 /**
  * Primer filtro: el tipo de dato o la categoría con la que trabaja la estudiante.

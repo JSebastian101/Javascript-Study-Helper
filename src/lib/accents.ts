@@ -65,6 +65,22 @@ export const accents: Record<AccentName, AccentStyle> = {
     dot: 'bg-cyan-500',
     ring: 'has-[:focus-visible]:ring-cyan-500/40',
   },
+  indigo: {
+    soft: 'bg-indigo-50 dark:bg-indigo-500/10',
+    text: 'text-indigo-700 dark:text-indigo-300',
+    border: 'border-indigo-500 dark:border-indigo-400',
+    solid: 'bg-indigo-600 text-white dark:bg-indigo-500 dark:text-indigo-950',
+    dot: 'bg-indigo-500',
+    ring: 'has-[:focus-visible]:ring-indigo-500/40',
+  },
+  fuchsia: {
+    soft: 'bg-fuchsia-50 dark:bg-fuchsia-500/10',
+    text: 'text-fuchsia-700 dark:text-fuchsia-300',
+    border: 'border-fuchsia-500 dark:border-fuchsia-400',
+    solid: 'bg-fuchsia-600 text-white dark:bg-fuchsia-500 dark:text-fuchsia-950',
+    dot: 'bg-fuchsia-500',
+    ring: 'has-[:focus-visible]:ring-fuchsia-500/40',
+  },
 }
 
 export function cx(...classes: (string | false | null | undefined)[]): string {

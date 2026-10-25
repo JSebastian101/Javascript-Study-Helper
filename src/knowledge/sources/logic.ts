@@ -36,6 +36,7 @@ const logic: KnowledgeSource = {
       ],
       related: ['logic.strict-equality', 'logic.loose-inequality', 'number.coercion'],
       sections: ['7'],
+      alsoIn: [{ file: 'wiki/tripleten/condicionales.md', title: 'Condicionales (TripleTen)', sections: ['3'] }],
     },
     {
       id: 'logic.strict-equality',
@@ -76,8 +77,9 @@ const logic: KnowledgeSource = {
           `,
         },
       ],
-      related: ['logic.loose-equality', 'logic.strict-inequality', 'logic.if-else'],
+      related: ['logic.loose-equality', 'logic.strict-inequality', 'logic.if-else', 'variables.assignment'],
       sections: ['7'],
+      alsoIn: [{ file: 'wiki/tripleten/condicionales.md', title: 'Condicionales (TripleTen)', sections: ['3'] }],
     },
     {
       id: 'logic.loose-inequality',
@@ -90,13 +92,18 @@ const logic: KnowledgeSource = {
       summary: 'Compara si dos valores son diferentes. Hace coerción antes de comparar.',
       syntax: ['a != b'],
       returns: { type: 'boolean', description: 'true si los valores son diferentes después de convertirlos; false si son iguales.' },
-      keyPoints: ['Comprueba el valor haciendo coerción.', '5 != "5" es false porque, después de convertir, los valores son iguales.'],
+      keyPoints: [
+        'Comprueba el valor haciendo coerción.',
+        '5 != "5" es false porque, después de convertir, los valores son iguales.',
+        'Se lee "no es igual a": 7 != 6 se lee "7 no es igual a 6", y eso es verdadero.',
+      ],
       examples: [
         { title: 'Número y string con el mismo valor', fromNotes: true, code: `5 != "5" // false` },
         { title: 'Valores diferentes', code: `5 != 8 // true` },
       ],
-      related: ['logic.strict-inequality', 'logic.loose-equality'],
+      related: ['logic.strict-inequality', 'logic.loose-equality', 'logic.not'],
       sections: ['8'],
+      alsoIn: [{ file: 'wiki/tripleten/condicionales.md', title: 'Condicionales (TripleTen)', sections: ['4'] }],
     },
     {
       id: 'logic.strict-inequality',
@@ -122,8 +129,9 @@ const logic: KnowledgeSource = {
           explanation: 'indexOf() retorna -1 porque "z" no está, así que posicion !== -1 es false.',
         },
       ],
-      related: ['logic.loose-inequality', 'logic.strict-equality'],
+      related: ['logic.loose-inequality', 'logic.strict-equality', 'logic.not'],
       sections: ['8'],
+      alsoIn: [{ file: 'wiki/tripleten/condicionales.md', title: 'Condicionales (TripleTen)', sections: ['4'] }],
     },
     {
       id: 'logic.greater',
@@ -161,8 +169,9 @@ const logic: KnowledgeSource = {
           `,
         },
       ],
-      related: ['logic.greater-equal', 'logic.if-else'],
+      related: ['logic.greater-equal', 'logic.less', 'logic.if-else'],
       sections: ['11'],
+      alsoIn: [{ file: 'wiki/tripleten/condicionales.md', title: 'Condicionales (TripleTen)', sections: ['2'] }],
     },
     {
       id: 'logic.greater-equal',
@@ -195,8 +204,9 @@ const logic: KnowledgeSource = {
           `,
         },
       ],
-      related: ['logic.greater', 'logic.if-else'],
+      related: ['logic.greater', 'logic.less-equal', 'logic.if-else'],
       sections: ['10'],
+      alsoIn: [{ file: 'wiki/tripleten/condicionales.md', title: 'Condicionales (TripleTen)', sections: ['2'] }],
     },
     {
       id: 'logic.if-else',
@@ -227,8 +237,9 @@ const logic: KnowledgeSource = {
       ],
       keyPoints: [
         'Las condiciones se revisan en orden, de arriba hacia abajo.',
-        'Solo se ejecuta el primer bloque cuya condición sea true.',
+        'Solo se ejecuta el primer bloque cuya condición sea true; las demás se ignoran, por eso el orden importa.',
         'else if y else son opcionales.',
+        'El código entre llaves se llama cuerpo. No hace falta poner punto y coma después de las llaves.',
       ],
       examples: [
         {
@@ -289,10 +300,24 @@ const logic: KnowledgeSource = {
             }
           `,
         },
+        {
+          title: 'Usar una variable booleana como condición',
+          fromNotes: true,
+          code: `
+            let happy = true
+
+            if (happy) {
+              console.log("😃")
+            }
+            // se muestra: 😃
+          `,
+          explanation: 'La condición puede ser directamente una variable que guarda true o false.',
+        },
       ],
-      related: ['logic.ternary', 'logic.and', 'logic.or'],
+      related: ['logic.ternary', 'logic.and', 'logic.or', 'logic.not', 'loops.if-inside'],
       highlight: ['if', 'else'],
       sections: ['10', '11'],
+      alsoIn: [{ file: 'wiki/tripleten/condicionales.md', title: 'Condicionales (TripleTen)', sections: ['1', '5', '6', '7'] }],
     },
     {
       id: 'logic.ternary',
@@ -400,8 +425,9 @@ const logic: KnowledgeSource = {
           `,
         },
       ],
-      related: ['logic.and', 'logic.if-else'],
+      related: ['logic.and', 'logic.not', 'logic.if-else'],
       sections: ['12', '13'],
+      alsoIn: [{ file: 'wiki/tripleten/condicionales.md', title: 'Condicionales (TripleTen)', sections: ['9', '11'] }],
     },
     {
       id: 'logic.and',
@@ -410,7 +436,7 @@ const logic: KnowledgeSource = {
       kind: 'operator',
       categories: ['logic'],
       actions: ['combine-conditions'],
-      phrases: ['que se cumplan todas', 'una condición y otra', 'las dos a la vez'],
+      phrases: ['que se cumplan todas', 'una condición y otra', 'las dos a la vez', 'estar entre dos valores'],
       summary: 'Combina condiciones. El resultado es true solo si todas son true; si alguna es false, el resultado es false.',
       syntax: ['condición1 && condición2'],
       returns: { type: 'boolean', description: 'true si todas las condiciones son true; false si alguna es false.' },
@@ -449,9 +475,24 @@ const logic: KnowledgeSource = {
             }
           `,
         },
+        {
+          title: 'Comprobar que un valor está dentro de un rango',
+          fromNotes: true,
+          code: `
+            let temperature = 36.7
+
+            if (temperature > 36.6 && temperature <= 37) {
+              console.log("Todo parece normal.")
+            } else {
+              console.log("¡Ve al médico lo antes posible!")
+            }
+            // se muestra: Todo parece normal.
+          `,
+        },
       ],
-      related: ['logic.or', 'logic.if-else'],
+      related: ['logic.or', 'logic.not', 'logic.if-else'],
       sections: ['12', '13'],
+      alsoIn: [{ file: 'wiki/tripleten/condicionales.md', title: 'Condicionales (TripleTen)', sections: ['9', '10', '11'] }],
     },
   ],
   comparisons: [
@@ -475,34 +516,37 @@ const logic: KnowledgeSource = {
     },
     {
       id: 'logic.greater',
-      title: 'Mayor que y mayor o igual que',
-      concepts: ['logic.greater', 'logic.greater-equal'],
+      title: 'Mayor que, menor que y sus versiones con igual',
+      concepts: ['logic.greater', 'logic.greater-equal', 'logic.less', 'logic.less-equal'],
       inputHeaders: ['a', 'b'],
       columns: [
         { header: 'a > b', template: '$1 > $2' },
         { header: 'a >= b', template: '$1 >= $2' },
+        { header: 'a < b', template: '$1 < $2' },
+        { header: 'a <= b', template: '$1 <= $2' },
       ],
       rows: [
-        { inputs: ['10', '5'], results: ['true', 'true'] },
-        { inputs: ['5', '5'], results: ['false', 'true'] },
-        { inputs: ['3', '5'], results: ['false', 'false'] },
+        { inputs: ['10', '5'], results: ['true', 'true', 'false', 'false'] },
+        { inputs: ['5', '5'], results: ['false', 'true', 'false', 'true'] },
+        { inputs: ['3', '5'], results: ['false', 'false', 'true', 'true'] },
       ],
     },
     {
       id: 'logic.truth-table',
       title: 'Tablas de verdad',
       description: 'Todas las combinaciones posibles de dos condiciones.',
-      concepts: ['logic.or', 'logic.and'],
+      concepts: ['logic.or', 'logic.and', 'logic.not'],
       inputHeaders: ['a', 'b'],
       columns: [
         { header: 'a || b', template: '$1 || $2' },
         { header: 'a && b', template: '$1 && $2' },
+        { header: '!a', template: '!$1' },
       ],
       rows: [
-        { inputs: ['true', 'true'], results: ['true', 'true'] },
-        { inputs: ['true', 'false'], results: ['true', 'false'] },
-        { inputs: ['false', 'false'], results: ['false', 'false'] },
-        { inputs: ['false', 'true'], results: ['true', 'false'] },
+        { inputs: ['true', 'true'], results: ['true', 'true', 'false'] },
+        { inputs: ['true', 'false'], results: ['true', 'false', 'false'] },
+        { inputs: ['false', 'false'], results: ['false', 'false', 'true'] },
+        { inputs: ['false', 'true'], results: ['true', 'false', 'true'] },
       ],
     },
   ],

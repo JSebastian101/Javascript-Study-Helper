@@ -93,13 +93,31 @@ export const actions: Action[] = [
     id: 'repeat',
     label: 'Repetir',
     hint: 'Repetir varias veces',
-    synonyms: ['repetir', 'duplicar', 'repetir varias veces'],
+    synonyms: ['repetir', 'duplicar', 'repetir varias veces', 'hacer algo varias veces', 'repetir un código', 'repetir mientras se cumpla una condición'],
+  },
+  {
+    id: 'iterate',
+    label: 'Recorrer',
+    hint: 'Pasar por cada elemento de una lista, uno por uno',
+    synonyms: ['recorrer', 'recorrer un arreglo', 'pasar por cada elemento', 'hacer algo con cada elemento', 'iterar'],
+  },
+  {
+    id: 'stop',
+    label: 'Detener o saltar',
+    hint: 'Terminar un bucle antes de tiempo o saltar una repetición',
+    synonyms: ['detener el bucle', 'salir del bucle', 'saltar una iteración', 'omitir un elemento', 'pasar a la siguiente'],
   },
   {
     id: 'convert',
     label: 'Convertir a otro tipo',
     hint: 'Pasar de un tipo de dato a otro',
     synonyms: ['convertir', 'transformar en', 'pasar de texto a número', 'pasar de texto a arreglo', 'pasar de arreglo a texto'],
+  },
+  {
+    id: 'check-type',
+    label: 'Saber el tipo de dato',
+    hint: 'Averiguar de qué tipo es un valor',
+    synonyms: ['saber de qué tipo es', 'comprobar el tipo', 'qué tipo de dato es', 'revisar si es un número o un texto'],
   },
   {
     id: 'calculate',
@@ -148,6 +166,30 @@ export const actions: Action[] = [
     label: 'Tomar decisiones',
     hint: 'Ejecutar un código u otro según una condición',
     synonyms: ['decidir', 'si pasa algo, hacer...', 'si no...', 'elegir entre dos opciones'],
+  },
+  {
+    id: 'call',
+    label: 'Llamar una función',
+    hint: 'Ejecutar el código de una función, con o sin datos',
+    synonyms: ['llamar', 'invocar', 'ejecutar una función', 'pasarle datos a una función', 'usar una función'],
+  },
+  {
+    id: 'return',
+    label: 'Devolver un resultado',
+    hint: 'Entregar un valor desde una función para usarlo después',
+    synonyms: ['retornar', 'devolver', 'regresar un valor', 'obtener el resultado de una función'],
+  },
+  {
+    id: 'inspect',
+    label: 'Revisar valores',
+    hint: 'Ver qué valores tiene el programa mientras se ejecuta',
+    synonyms: ['depurar', 'mostrar en la consola', 'ver el valor de una variable', 'pausar el código', 'revisar paso a paso'],
+  },
+  {
+    id: 'fix-error',
+    label: 'Entender un error',
+    hint: 'Saber qué dice un mensaje de error y qué lo causa',
+    synonyms: ['leer un error', 'mensaje en rojo', 'qué significa este error', 'corregir un error'],
   },
   {
     id: 'understand',

@@ -14,13 +14,15 @@ const arrays: KnowledgeSource = {
       kind: 'concept',
       categories: ['array'],
       actions: ['understand', 'create'],
-      phrases: ['crear una lista', 'guardar varios elementos', 'crear un arreglo'],
+      phrases: ['crear una lista', 'guardar varios elementos', 'crear un arreglo', 'guardar varios valores en una sola variable'],
       summary: 'Un arreglo es un tipo de dato que actúa como una lista y puede tener varios elementos.',
       syntax: ['[elemento1, elemento2, elemento3]'],
       keyPoints: [
         'Se crea usando corchetes [ ].',
         'Los elementos están organizados y separados por comas.',
         'Cada elemento tiene una posición; la primera posición es 0.',
+        'Guarda varios valores en una sola variable: así no hace falta crear una variable para cada dato.',
+        'Puede guardar cualquier tipo de dato, incluso mezclados u otros arreglos.',
       ],
       examples: [
         {
@@ -41,10 +43,33 @@ const arrays: KnowledgeSource = {
           `,
           explanation: 'Un arreglo puede empezar sin elementos y llenarse después.',
         },
+        {
+          title: 'Sin arreglo: una variable por cada dato',
+          fromNotes: true,
+          code: `
+            const chips = "papas"
+            const lemonade = "limonada"
+            const grapefruit = "pomelo"
+
+            const groceries = ["papas", "limonada", "pomelo"]
+          `,
+          explanation: 'Con un arreglo, los tres datos quedan en una sola variable.',
+        },
+        {
+          title: 'Datos de distintos tipos en un mismo arreglo',
+          fromNotes: true,
+          code: `
+            const quizAnswers = [true, false, false, true]
+            const randomData = ["papas", 12, [], undefined, false]
+
+            randomData.length // 5
+          `,
+        },
       ],
-      related: ['array.bracket-access', 'array.length'],
+      related: ['array.bracket-access', 'array.length', 'array.nested'],
       highlight: [],
       sections: ['1'],
+      alsoIn: [{ file: 'wiki/tripleten/arrays.md', title: 'Arrays (TripleTen)', sections: ['1', '2'] }],
     },
     {
       id: 'array.bracket-access',
@@ -52,13 +77,24 @@ const arrays: KnowledgeSource = {
       aka: 'Acceder a un elemento por su posición',
       kind: 'syntax',
       categories: ['array'],
-      actions: ['access'],
-      phrases: ['acceder a un elemento', 'obtener el elemento de una posición', 'obtener el primer elemento', 'leer un elemento de la lista'],
+      actions: ['access', 'replace', 'add'],
+      phrases: [
+        'acceder a un elemento',
+        'obtener el elemento de una posición',
+        'obtener el primer elemento',
+        'leer un elemento de la lista',
+        'cambiar un elemento',
+        'agregar un elemento en una posición',
+      ],
       summary: 'Permite acceder a un elemento del arreglo usando su posición (index).',
       syntax: ['arreglo[index]'],
       parameters: [{ name: 'index', description: 'Número de la posición. El primer elemento está en la posición 0.' }],
       returns: { type: 'el elemento', description: 'El elemento que está en esa posición. Si la posición no existe, el resultado es undefined.' },
-      keyPoints: ['La primera posición es 0, no 1.', 'Si accedes a una posición que no existe, el resultado es undefined (no da error).'],
+      keyPoints: [
+        'La primera posición es 0, no 1.',
+        'Si accedes a una posición que no existe, el resultado es undefined (no da error).',
+        'También sirve para cambiar un elemento o agregar uno nuevo, asignándole un valor a esa posición: arreglo[index] = valor.',
+      ],
       examples: [
         {
           title: 'Acceder a cada elemento',
@@ -95,10 +131,32 @@ const arrays: KnowledgeSource = {
           `,
           explanation: 'Como las posiciones empiezan en 0, la última posición es length - 1.',
         },
+        {
+          title: 'Cambiar un elemento',
+          fromNotes: true,
+          code: `
+            const groceries = ["papas", "limonada", "pomelo"]
+            groceries[0] = "zanahoria"
+
+            console.log(groceries) // ["zanahoria", "limonada", "pomelo"]
+          `,
+        },
+        {
+          title: 'Agregar elementos en posiciones nuevas',
+          fromNotes: true,
+          code: `
+            let empty = []
+            empty[0] = "primero"
+            empty[1] = "segundo"
+
+            console.log(empty) // ["primero", "segundo"]
+          `,
+        },
       ],
-      related: ['array.destructuring', 'array.length', 'string.bracket-notation'],
+      related: ['array.destructuring', 'array.length', 'string.bracket-notation', 'array.nested'],
       highlight: [],
       sections: ['2', '3'],
+      alsoIn: [{ file: 'wiki/tripleten/arrays.md', title: 'Arrays (TripleTen)', sections: ['3', '4', '5'] }],
     },
     {
       id: 'array.length',
@@ -151,8 +209,9 @@ const arrays: KnowledgeSource = {
           `,
         },
       ],
-      related: ['array.bracket-access', 'array.push'],
+      related: ['array.bracket-access', 'array.push', 'string.length'],
       sections: ['4'],
+      alsoIn: [{ file: 'wiki/tripleten/arrays.md', title: 'Arrays (TripleTen)', sections: ['5'] }],
     },
     {
       id: 'array.destructuring',
@@ -317,6 +376,7 @@ const arrays: KnowledgeSource = {
       ],
       related: ['array.unshift', 'array.pop', 'array.splice', 'array.concat'],
       sections: ['8'],
+      alsoIn: [{ file: 'wiki/tripleten/arrays.md', title: 'Arrays (TripleTen)', sections: ['10'] }],
     },
     {
       id: 'array.unshift',
@@ -412,6 +472,7 @@ const arrays: KnowledgeSource = {
       ],
       related: ['array.shift', 'array.push', 'array.splice'],
       sections: ['8'],
+      alsoIn: [{ file: 'wiki/tripleten/arrays.md', title: 'Arrays (TripleTen)', sections: ['11'] }],
     },
     {
       id: 'array.shift',

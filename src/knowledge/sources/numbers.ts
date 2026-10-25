@@ -221,9 +221,9 @@ const numbers: KnowledgeSource = {
       name: 'Coerción de datos',
       aka: 'Conversión automática de tipos',
       kind: 'concept',
-      categories: ['number', 'string'],
+      categories: ['number', 'string', 'variables'],
       actions: ['understand', 'convert'],
-      phrases: ['conversión automática', 'mezclar texto y números', 'por qué 2 + "5" da "25"', 'coerción implícita'],
+      phrases: ['conversión automática', 'mezclar texto y números', 'por qué 2 + "5" da "25"', 'coerción implícita', 'conversión implícita'],
       summary:
         'La coerción es cuando se convierte el tipo de un dato a otro diferente. En la coerción implícita, el programa convierte los datos automáticamente según la operación.',
       keyPoints: [
@@ -231,6 +231,8 @@ const numbers: KnowledgeSource = {
         'Con -, * y /, el string se convierte a número.',
         'undefined se convierte en NaN y null se convierte en 0.',
         'NaN significa "Not a Number": el resultado no es un número válido.',
+        'Es mejor evitarla: hace que el código sea confuso y puede causar errores difíciles de encontrar, porque no siempre aparecen en la consola.',
+        'Para convertir de forma explícita, usa String(), Number() o Boolean().',
       ],
       examples: [
         {
@@ -261,22 +263,44 @@ const numbers: KnowledgeSource = {
           `,
           explanation: '== hace coerción antes de comparar; === no.',
         },
+        {
+          title: 'Aunque los dos valores sean strings',
+          fromNotes: true,
+          code: `
+            "10" * "2" // 20
+            "15" - 5 // 10
+          `,
+          explanation: 'Con *, - y / los strings se convierten en números, incluso si los dos valores son strings.',
+        },
       ],
-      related: ['number.unary-plus', 'number.Number', 'logic.loose-equality', 'logic.strict-equality'],
+      related: [
+        'number.unary-plus',
+        'number.Number',
+        'logic.loose-equality',
+        'logic.strict-equality',
+        'string.concatenation',
+        'string.String',
+        'number.NaN',
+      ],
       highlight: [],
       sections: ['3'],
+      alsoIn: [{ file: 'wiki/tripleten/fundamentos-js.md', title: 'Fundamentos de JavaScript (TripleTen)', sections: ['6'] }],
     },
     {
       id: 'number.increment',
       name: '++ / --',
       aka: 'Incremento y decremento',
       kind: 'operator',
-      categories: ['number'],
+      categories: ['number', 'loops'],
       actions: ['update'],
       phrases: ['sumar uno', 'aumentar en 1', 'restar uno', 'disminuir en 1', 'incrementar', 'decrementar', 'llevar un contador'],
       summary: '++ suma 1 al valor de una variable y -- le resta 1. El nuevo valor queda guardado en la misma variable.',
       syntax: ['variable++', 'variable--', '++variable', '--variable'],
-      keyPoints: ['Pueden ir al principio o al final de la variable.', 'La variable debe declararse con let, porque su valor va a cambiar.'],
+      keyPoints: [
+        'Pueden ir al principio o al final de la variable.',
+        'La variable debe declararse con let, porque su valor va a cambiar.',
+        'Son muy comunes en los bucles, para aumentar el contador: i++.',
+      ],
       examples: [
         {
           title: 'Incrementar y decrementar',
@@ -320,17 +344,30 @@ const numbers: KnowledgeSource = {
             console.log(b) // 11
           `,
         },
+        {
+          title: 'Combinar ++ con -=',
+          fromNotes: true,
+          code: `
+            let counter = 7
+            counter++
+            counter -= 2
+
+            console.log(counter) // 6
+          `,
+          explanation: 'El contador sube a 8 y después se le restan 2.',
+        },
       ],
-      related: ['number.compound-assignment'],
+      related: ['number.compound-assignment', 'loops.for'],
       highlight: ['++', '--'],
       sections: ['4'],
+      alsoIn: [{ file: 'wiki/tripleten/bucles.md', title: 'Bucles (TripleTen)', sections: ['1', '2', '3'] }],
     },
     {
       id: 'number.compound-assignment',
       name: '+= -= *= /= %= **=',
       aka: 'Operadores de operación y asignación',
       kind: 'operator',
-      categories: ['number'],
+      categories: ['number', 'loops'],
       actions: ['update'],
       phrases: ['acumular', 'sumar a lo que ya tiene', 'actualizar un total', 'aumentar en una cantidad', 'descontar de una variable', 'operar y guardar'],
       summary: 'Realizan una operación con el valor de la variable y asignan el resultado a esa misma variable.',
@@ -412,9 +449,10 @@ const numbers: KnowledgeSource = {
           `,
         },
       ],
-      related: ['number.increment', 'number.add', 'number.subtract'],
+      related: ['number.increment', 'number.add', 'number.subtract', 'loops.accumulator'],
       highlight: ['+=', '-=', '*=', '/=', '%=', '**='],
       sections: ['5', '6'],
+      alsoIn: [{ file: 'wiki/tripleten/bucles.md', title: 'Bucles (TripleTen)', sections: ['1', '3'] }],
     },
     {
       id: 'number.unary-plus',
@@ -844,7 +882,7 @@ const numbers: KnowledgeSource = {
       id: 'number.Number',
       name: 'Number()',
       kind: 'function',
-      categories: ['number', 'string'],
+      categories: ['number', 'string', 'variables'],
       actions: ['convert'],
       converts: { from: 'string', to: 'number' },
       phrases: ['convertir a número', 'pasar de texto a número'],
@@ -852,7 +890,12 @@ const numbers: KnowledgeSource = {
       syntax: ['Number(valor)'],
       parameters: [{ name: 'valor', description: 'El valor que quieres convertir, por ejemplo un string.' }],
       returns: { type: 'number', description: 'El número, o NaN si no se puede convertir.' },
-      keyPoints: ['Si el string tiene letras, antes o después del número, retorna NaN.', 'Conserva los decimales.'],
+      keyPoints: [
+        'Si el string tiene letras, antes o después del número, retorna NaN.',
+        'Conserva los decimales.',
+        'null se convierte en 0.',
+        'Es una conversión explícita: se ve claramente en el código dónde cambia el tipo.',
+      ],
       examples: [
         {
           title: 'Convertir un string con un número',
@@ -871,10 +914,16 @@ const numbers: KnowledgeSource = {
           fromNotes: true,
           code: `Number("decimal 12.3") // NaN`,
         },
+        {
+          title: 'Convertir null',
+          fromNotes: true,
+          code: `Number(null) // 0`,
+        },
       ],
-      related: ['number.parseFloat', 'number.parseInt', 'number.unary-plus'],
+      related: ['number.parseFloat', 'number.parseInt', 'number.unary-plus', 'string.String', 'variables.Boolean'],
       highlight: ['Number'],
       sections: ['23'],
+      alsoIn: [{ file: 'wiki/tripleten/fundamentos-js.md', title: 'Fundamentos de JavaScript (TripleTen)', sections: ['7'] }],
     },
     {
       id: 'number.toFixed',

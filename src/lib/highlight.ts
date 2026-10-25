@@ -25,9 +25,12 @@ export interface Token {
   emphasis?: boolean
 }
 
-const KEYWORDS = new Set(['const', 'let', 'var', 'if', 'else', 'return', 'function', 'new', 'typeof'])
+const KEYWORDS = new Set([
+  'const', 'let', 'var', 'if', 'else', 'return', 'function', 'new', 'typeof',
+  'for', 'of', 'while', 'break', 'continue', 'debugger',
+])
 const LITERALS = new Set(['true', 'false', 'null', 'undefined', 'NaN', 'Infinity'])
-const GLOBALS = new Set(['Math', 'Number', 'console', 'String', 'Array'])
+const GLOBALS = new Set(['Math', 'Number', 'console', 'String', 'Array', 'Boolean'])
 const OPERATORS = [
   '**=', '===', '!==', '...',
   '**', '==', '!=', '<=', '>=', '&&', '||', '++', '--', '+=', '-=', '*=', '/=', '%=', '=>',

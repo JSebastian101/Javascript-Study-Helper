@@ -56,7 +56,11 @@ const strings: KnowledgeSource = {
       syntax: ['texto[index]'],
       parameters: [{ name: 'index', description: 'Número de la posición del carácter. El primer carácter está en la posición 0.' }],
       returns: { type: 'string', description: 'El carácter que está en esa posición.' },
-      keyPoints: ['Las posiciones empiezan en 0: el primer carácter es texto[0].', 'Los espacios también ocupan una posición.'],
+      keyPoints: [
+        'Las posiciones empiezan en 0: el primer carácter es texto[0].',
+        'Los espacios también ocupan una posición.',
+        'Si en esa posición no hay ningún carácter (la posición es igual o mayor que la cantidad de caracteres), el resultado es undefined.',
+      ],
       examples: [
         {
           title: 'Obtener el primer carácter',
@@ -83,10 +87,29 @@ const strings: KnowledgeSource = {
             texto[posicion] // "l"
           `,
         },
+        {
+          title: 'Una posición que no existe',
+          fromNotes: true,
+          code: `
+            "expresso"[20] // undefined
+            "expresso".length // 8
+            "expresso"[8] // undefined
+          `,
+          explanation: 'La última posición es 7 (length - 1), así que desde la posición 8 ya no hay caracteres.',
+        },
+        {
+          title: 'Juntar caracteres de distintas posiciones',
+          fromNotes: true,
+          code: `
+            const language = "JavaScript"
+            console.log(language[0] + language[4]) // "JS"
+          `,
+        },
       ],
-      related: ['array.bracket-access', 'string.indexOf', 'string.slice'],
+      related: ['array.bracket-access', 'string.indexOf', 'string.slice', 'string.length'],
       highlight: [],
       sections: ['2'],
+      alsoIn: [{ file: 'wiki/tripleten/strings.md', title: 'Strings (TripleTen)', sections: ['3', '4'] }],
     },
     {
       id: 'string.escape-newline',
@@ -191,7 +214,7 @@ const strings: KnowledgeSource = {
           `,
         },
       ],
-      related: ['string.basics', 'string.escape-newline'],
+      related: ['string.basics', 'string.escape-newline', 'string.concatenation'],
       highlight: [],
       sections: ['4'],
     },
@@ -212,6 +235,7 @@ const strings: KnowledgeSource = {
         'Si el texto no está en el string, retorna -1.',
         'Si el texto está al principio, retorna 0. Ese 0 significa que sí lo encontró, en la primera posición.',
         'Si el texto aparece varias veces, retorna la posición de la primera vez.',
+        'Distingue mayúsculas de minúsculas.',
       ],
       examples: [
         {
@@ -253,9 +277,18 @@ const strings: KnowledgeSource = {
             correo.indexOf("@") // 4
           `,
         },
+        {
+          title: 'Distingue mayúsculas de minúsculas',
+          fromNotes: true,
+          code: `
+            "Repasar".indexOf("R") // 0
+            "Repasar".indexOf("r") // 6
+          `,
+        },
       ],
       related: ['string.includes', 'string.slice', 'string.bracket-notation'],
       sections: ['5'],
+      alsoIn: [{ file: 'wiki/tripleten/strings.md', title: 'Strings (TripleTen)', sections: ['6', '7'] }],
     },
     {
       id: 'string.includes',
@@ -271,6 +304,7 @@ const strings: KnowledgeSource = {
       keyPoints: [
         'Solo dice si está o no está; no dice en qué posición.',
         'Distingue mayúsculas de minúsculas: "Jeni" y "jeni" son diferentes.',
+        'Antes se hacía comparando el resultado de indexOf() con -1. Funciona, pero includes() es más claro.',
       ],
       examples: [
         {
@@ -309,9 +343,19 @@ const strings: KnowledgeSource = {
             }
           `,
         },
+        {
+          title: 'Lo mismo comparando indexOf() con -1',
+          fromNotes: true,
+          code: `
+            "sal y pimienta".indexOf("azúcar") !== -1 // false
+            "sal y pimienta".includes("azúcar") // false
+          `,
+          explanation: 'Las dos formas dan el mismo resultado, pero con includes() se entiende mejor qué se está comprobando.',
+        },
       ],
-      related: ['string.indexOf', 'array.includes'],
+      related: ['string.indexOf', 'array.includes', 'string.startsWith', 'string.endsWith'],
       sections: ['6'],
+      alsoIn: [{ file: 'wiki/tripleten/strings.md', title: 'Strings (TripleTen)', sections: ['8'] }],
     },
     {
       id: 'string.slice',
@@ -444,9 +488,21 @@ const strings: KnowledgeSource = {
             respuesta.toUpperCase() === "SÍ" // true
           `,
         },
+        {
+          title: 'Combinar los dos métodos en un mismo texto',
+          fromNotes: true,
+          code: `
+            const partOne = "Data"
+            const partTwo = "Entry"
+            const combined = partOne.toLowerCase() + "_" + partTwo.toUpperCase()
+
+            console.log(combined) // "data_ENTRY"
+          `,
+        },
       ],
       related: ['string.toLowerCase'],
       sections: ['8'],
+      alsoIn: [{ file: 'wiki/tripleten/strings.md', title: 'Strings (TripleTen)', sections: ['10', '11'] }],
     },
     {
       id: 'string.toLowerCase',
@@ -460,7 +516,11 @@ const strings: KnowledgeSource = {
       parameters: [],
       returns: { type: 'string', description: 'Un nuevo string con todas las letras en minúsculas.' },
       mutates: false,
-      keyPoints: ['No recibe argumentos, pero sí lleva paréntesis.', 'Los números, espacios y signos no cambian.'],
+      keyPoints: [
+        'No recibe argumentos, pero sí lleva paréntesis.',
+        'Los números, espacios y signos no cambian.',
+        'Sirve para comparar dos strings sin importar las mayúsculas y minúsculas.',
+      ],
       examples: [
         {
           title: 'Convertir un texto a minúsculas',
@@ -482,9 +542,21 @@ const strings: KnowledgeSource = {
             enMinusculas.includes("café") // true
           `,
         },
+        {
+          title: 'Comparar dos textos sin importar las mayúsculas',
+          fromNotes: true,
+          code: `
+            const firstStr = "Esta verificación no funcionará"
+            const secondStr = "esTA vEriFicaCIón no funcionará"
+
+            firstStr === secondStr // false
+            firstStr.toLowerCase() === secondStr.toLowerCase() // true
+          `,
+        },
       ],
       related: ['string.toUpperCase', 'string.includes'],
       sections: ['8'],
+      alsoIn: [{ file: 'wiki/tripleten/strings.md', title: 'Strings (TripleTen)', sections: ['10'] }],
     },
     {
       id: 'string.replace',

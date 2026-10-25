@@ -131,8 +131,8 @@ describe('modelo de conocimiento', () => {
 })
 
 describe('filtrado', () => {
-  it('String → Buscar muestra indexOf e includes', () => {
-    expect(ids(query.conceptsFor('string', 'search'))).toEqual(['string.indexOf', 'string.includes'])
+  it('String → Buscar muestra indexOf, includes, startsWith y endsWith', () => {
+    expect(ids(query.conceptsFor('string', 'search'))).toEqual(['string.indexOf', 'string.includes', 'string.startsWith', 'string.endsWith'])
   })
 
   it('Array → Buscar muestra includes de arreglos, no el de strings', () => {
@@ -152,7 +152,7 @@ describe('filtrado', () => {
     const numberActions = query.actionsFor('number').map((o) => o.action.id)
     expect(numberActions).not.toContain('cut')
     expect(numberActions).toContain('round')
-    expect(query.actionsFor('string').find((o) => o.action.id === 'search')?.count).toBe(2)
+    expect(query.actionsFor('string').find((o) => o.action.id === 'search')?.count).toBe(4)
   })
 
   it('String → Convertir incluye split y las funciones que convierten texto a número', () => {
@@ -162,7 +162,7 @@ describe('filtrado', () => {
   })
 
   it('muestra una tabla comparativa cuando hay al menos dos de sus conceptos', () => {
-    expect(ids(query.comparisonsFor(query.conceptsFor('string', 'search')))).toEqual(['string.search'])
+    expect(ids(query.comparisonsFor(query.conceptsFor('string', 'search')))).toEqual(['string.search', 'string.starts-ends'])
     expect(ids(query.comparisonsFor(query.conceptsFor('string', 'compare')))).toEqual(['logic.equality'])
     expect(query.comparisonsFor(query.conceptsFor('array', 'cut'))).toEqual([])
   })

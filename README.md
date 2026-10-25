@@ -36,13 +36,14 @@ src/
   knowledge/                 ← todo el conocimiento, sin nada de UI
     model.ts                 tipos del modelo común (Concept, Action, Category…)
     vocabulary/
-      categories.ts          tipos de dato y categorías (String, Number, Array, Lógica)
+      categories.ts          tipos de dato (String, Number, Array) y temas (Variables, Lógica, Bucles, Funciones, Depuración)
       actions.ts             vocabulario de acciones en lenguaje natural
     sources/                 una fuente por archivo de apuntes (.ts o .json)
       strings.ts             ← wiki/string.md
       numbers.ts             ← wiki/numbers.md
       logic.ts               ← wiki/numbers.md (comparaciones y condicionales)
       arrays.ts              ← wiki/array.md
+      tripleten-*.ts         ← wiki/tripleten/*.md (fundamentos-js, condicionales, bucles, arrays, funciones, depuracion, strings)
     practice/pending.ts      ejercicios con solución guardados para la futura sección de práctica
     build.ts                 combina las fuentes y valida las referencias
     query.ts                 filtrado: tipo → acciones → conceptos
