@@ -71,6 +71,11 @@ export interface Example {
   explanation?: string
   /** true si el ejemplo viene (o está adaptado) de los apuntes de la estudiante. */
   fromNotes?: boolean
+  /**
+   * Si el ejemplo lanza un error a propósito, su nombre: "SyntaxError",
+   * "ReferenceError", "TypeError"... Los tests verifican que lo lance.
+   */
+  throws?: string
 }
 
 /** Tabla informativa estática dentro de una tarjeta. */
@@ -80,6 +85,16 @@ export interface InfoTable {
   rows: string[][]
   /** Índices de columnas que se muestran como código. */
   codeColumns?: number[]
+}
+
+/** Referencia a una o varias preguntas de un archivo de apuntes. */
+export interface NoteRef {
+  /** Ruta desde la raíz del repo: "wiki/tripleten/strings.md". */
+  file: string
+  /** Nombre visible de esos apuntes: "Strings (TripleTen)". */
+  title: string
+  /** Números de las preguntas ("## 6." → "6"). */
+  sections: string[]
 }
 
 export interface Concept {
@@ -113,8 +128,29 @@ export interface Concept {
   related?: string[]
   /** Palabras que se resaltan dentro del código de los ejemplos. Si falta, se deriva del nombre. */
   highlight?: string[]
-  /** Pregunta(s) de los apuntes donde aparece. */
+  /** Pregunta(s) de los apuntes de su fuente donde aparece. */
   sections: string[]
+  /** Otros apuntes que también tratan este concepto (cuando se enriqueció con otra wiki). */
+  alsoIn?: NoteRef[]
+}
+
+/**
+ * Ejercicio con solución tomado de una wiki. Todavía no se muestra en la app:
+ * queda guardado para la futura sección de práctica.
+ */
+export interface PendingExercise {
+  id: string
+  title: string
+  /** Ids de categoría y de acción, para encontrarlo desde la consulta. */
+  categories: string[]
+  actions: string[]
+  /** Enunciado en lenguaje natural. */
+  statement: string
+  /** Código de la solución; sus comentarios `// valor` se verifican en los tests. */
+  solution: string
+  /** Ids de los conceptos que usa la solución (no se muestran antes de revelarla). */
+  uses: string[]
+  from: NoteRef
 }
 
 /**

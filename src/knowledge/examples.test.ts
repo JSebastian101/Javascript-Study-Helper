@@ -1,8 +1,10 @@
 import vm from 'node:vm'
-import { isDeepStrictEqual } from 'node:util'
+import { inspect, isDeepStrictEqual } from 'node:util'
 import { describe, expect, it } from 'vitest'
 import { annotatedLines, isResultComment } from '../lib/highlight'
+import { dedent } from './build'
 import { knowledgeBase } from './index'
+import { pendingExercises } from './practice/pending'
 
 /**
  * Verifica que los resultados escritos en los comentarios de los ejemplos
@@ -49,19 +51,30 @@ function instrument(code: string) {
   return { code: lines.join('\n'), checks, problems }
 }
 
-function verify(code: string): string[] {
+/** Representación estable de un valor, tomada en el momento en que se muestra. */
+const snapshot = (value: unknown) => inspect(value, { depth: 10, breakLength: Infinity })
+
+/**
+ * Ejecuta un ejemplo y devuelve los problemas encontrados. Si `throws` tiene
+ * el nombre de un error, el ejemplo debe lanzar exactamente ese error.
+ */
+function verify(code: string, throws?: string): string[] {
   const { code: instrumented, checks, problems } = instrument(code)
-  const actual = new Map<number, unknown>()
+  const actual = new Map<number, string>()
   const context = vm.createContext({
     console: { log: () => {} },
-    __check: (id: number, value: unknown) => actual.set(id, value),
+    __check: (id: number, value: unknown) => actual.set(id, snapshot(value)),
   })
   try {
     vm.runInContext(instrumented, context)
+    if (throws) problems.push(`debía lanzar ${throws}, pero no lanzó ningún error`)
   } catch (error) {
-    return [...problems, `el código lanza un error: ${(error as Error).message}`]
+    const name = (error as Error).name
+    if (!throws) return [...problems, `el código lanza un error: ${(error as Error).message}`]
+    if (name !== throws) problems.push(`debía lanzar ${throws}, pero lanzó ${name}: ${(error as Error).message}`)
   }
   for (const check of checks) {
+    if (!actual.has(check.id)) continue
     let expected: unknown
     try {
       expected = vm.runInContext(`(${check.expected})`, context)
@@ -69,9 +82,8 @@ function verify(code: string): string[] {
       problems.push(`línea ${check.line}: el comentario "// ${check.expected}" no es un valor válido`)
       continue
     }
-    const value = actual.get(check.id)
-    if (!isDeepStrictEqual(value, expected)) {
-      problems.push(`línea ${check.line}: ${check.source} da ${JSON.stringify(value) ?? String(value)}, no ${check.expected}`)
+    if (actual.get(check.id) !== snapshot(expected)) {
+      problems.push(`línea ${check.line}: ${check.source} da ${actual.get(check.id)}, no ${check.expected}`)
     }
   }
   return problems
@@ -88,16 +100,37 @@ describe('el verificador', () => {
     expect(verify('"Hola Jeni".repeat(2) // "Hola JeniHola Jeni"')).toEqual([])
     expect(verify('Math.random() // por ejemplo 0.25')).toEqual([])
   })
+
+  it('toma el valor en el momento en que se muestra', () => {
+    expect(verify('const bin = []\nbin.push("x")\nconsole.log(bin) // ["x"]\nbin.pop()\nconsole.log(bin) // []')).toEqual([])
+  })
+
+  it('verifica los ejemplos que lanzan un error a propósito', () => {
+    expect(verify('let hut = "Refugio"\nhut("Ratón")', 'TypeError')).toEqual([])
+    expect(verify('numdberFnc(12)', 'ReferenceError')).toEqual([])
+    expect(verify('function f() {\n  return 1\n});', 'SyntaxError')).toEqual([])
+    expect(verify('1 + 1', 'TypeError')).toHaveLength(1)
+    expect(verify('numdberFnc(12)', 'TypeError')).toHaveLength(1)
+  })
 })
 
 describe('los resultados de los ejemplos son correctos', () => {
   for (const concept of knowledgeBase.concepts) {
     for (const example of concept.examples) {
       it(`${concept.id} › ${example.title}`, () => {
-        expect(verify(example.code)).toEqual([])
+        expect(verify(example.code, example.throws)).toEqual([])
       })
     }
   }
+})
+
+describe('los ejercicios pendientes', () => {
+  it('tienen soluciones con resultados correctos', () => {
+    const problems = pendingExercises.flatMap((exercise) =>
+      verify(dedent(exercise.solution)).map((problem) => `${exercise.id}: ${problem}`),
+    )
+    expect(problems).toEqual([])
+  })
 })
 
 describe('los ejemplos verifican al menos un resultado cuando lo muestran', () => {

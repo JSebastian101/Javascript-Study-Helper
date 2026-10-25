@@ -149,7 +149,7 @@ export function ConceptCard({
           <CategoryBadge category={category} />
           {from && to && <ConversionBadge from={from} to={to} />}
           <span className="basis-full sm:ml-auto sm:basis-auto">
-            <SourceTag source={concept.source} sections={concept.sections} />
+            <SourceTag source={concept.source} sections={concept.sections} also={concept.alsoIn} />
           </span>
         </div>
         <h3

@@ -66,6 +66,11 @@ export function ExampleList({ examples, terms, signal }: { examples: Example[]; 
                   aria-hidden
                 />
                 <span className="min-w-0 flex-1 font-medium text-ink">{example.title}</span>
+                {example.throws && (
+                  <span className="shrink-0 rounded-full border border-line-strong px-2 py-0.5 font-mono text-[11px] font-semibold text-ink-2">
+                    lanza {example.throws}
+                  </span>
+                )}
                 {example.fromNotes && <NotesBadge />}
               </button>
               {isOpen && (

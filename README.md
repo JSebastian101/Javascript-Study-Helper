@@ -19,13 +19,19 @@ npm install
 npm run dev      # servidor de desarrollo
 npm test         # valida el contenido y ejecuta todos los ejemplos
 npm run build    # chequeo de tipos + build de producción en dist/
+npm run wiki:coverage   # qué preguntas de cada wiki ya están en la app
 ```
 
-Requiere Node 22.12 o superior.
+Requiere Node 22.18 o superior.
 
 ## Arquitectura
 
 ```text
+wiki/                        apuntes de preguntas y respuestas (fuente de verdad)
+  string.md, array.md, numbers.md
+  tripleten/                 temas del resumen de unidades de TripleTen
+scripts/wiki-coverage.ts     reporte de cobertura de la wiki
+.claude/skills/convertir-wiki/  skill que convierte una wiki en contenido de la app
 src/
   knowledge/                 ← todo el conocimiento, sin nada de UI
     model.ts                 tipos del modelo común (Concept, Action, Category…)
@@ -37,6 +43,7 @@ src/
       numbers.ts             ← wiki/numbers.md
       logic.ts               ← wiki/numbers.md (comparaciones y condicionales)
       arrays.ts              ← wiki/array.md
+    practice/pending.ts      ejercicios con solución guardados para la futura sección de práctica
     build.ts                 combina las fuentes y valida las referencias
     query.ts                 filtrado: tipo → acciones → conceptos
     index.ts                 carga automática de sources/ con import.meta.glob
@@ -56,6 +63,15 @@ src/
   (un operador no tiene "¿Qué recibe?" y una sentencia no tiene "¿Qué retorna?").
 
 ## Cómo agregar un tema nuevo
+
+La forma recomendada es la skill de Claude Code `convertir-wiki`
+(`.claude/skills/convertir-wiki/SKILL.md`): en una sesión nueva, ejecuta
+`/convertir-wiki wiki/<archivo>.md`. La skill lee lo que ya existe en la app,
+decide qué preguntas son conceptos nuevos, cuáles enriquecen conceptos
+existentes y cuáles son ejercicios, verifica todo con los tests y termina con un
+reporte. Nunca modifica la wiki.
+
+Para hacerlo a mano:
 
 1. Escribe y revisa los apuntes (por ejemplo `wiki/objects.md`).
 2. Si el tema es un tipo de dato o una categoría nueva, agrégalo en

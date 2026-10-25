@@ -1,6 +1,11 @@
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { buildKnowledgeBase, dedent, KnowledgeValidationError } from './build'
 import { knowledgeBase } from './index'
+import type { NoteRef } from './model'
+import { pendingExercises } from './practice/pending'
 import { createQuery } from './query'
 import { actions } from './vocabulary/actions'
 import { categories } from './vocabulary/categories'
@@ -8,10 +13,53 @@ import { categories } from './vocabulary/categories'
 const query = createQuery(knowledgeBase)
 const ids = (list: { id: string }[]) => list.map((item) => item.id)
 
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
+
+/** Números de las preguntas de un archivo de la wiki ("## 6. ..." → "6"). */
+function questionNumbers(file: string): Set<string> | undefined {
+  const fullPath = path.join(repoRoot, file)
+  if (!fs.existsSync(fullPath)) return undefined
+  const text = fs.readFileSync(fullPath, 'utf8')
+  return new Set([...text.matchAll(/^## (\d+)\./gm)].map((match) => match[1]))
+}
+
+function checkRefs(owner: string, refs: Pick<NoteRef, 'file' | 'sections'>[], problems: string[]) {
+  for (const ref of refs) {
+    const questions = questionNumbers(ref.file)
+    if (!questions) {
+      problems.push(`${owner}: no existe ${ref.file}`)
+      continue
+    }
+    for (const section of ref.sections) {
+      if (!questions.has(section)) problems.push(`${owner}: ${ref.file} no tiene la pregunta ${section}`)
+    }
+  }
+}
+
 describe('modelo de conocimiento', () => {
-  it('carga el contenido de los tres archivos de apuntes', () => {
-    const files = new Set(knowledgeBase.concepts.map((c) => c.source.file))
-    expect([...files].sort()).toEqual(['wiki/array.md', 'wiki/numbers.md', 'wiki/string.md'])
+  it('cada concepto apunta a preguntas que existen en su wiki', () => {
+    const problems: string[] = []
+    for (const concept of knowledgeBase.concepts) {
+      checkRefs(concept.id, [{ file: concept.source.file, sections: concept.sections }, ...(concept.alsoIn ?? [])], problems)
+    }
+    expect(problems).toEqual([])
+  })
+
+  it('los ejercicios pendientes usan categorías, acciones, conceptos y preguntas que existen', () => {
+    const problems: string[] = []
+    const categoryIds = new Set(knowledgeBase.categories.map((c) => c.id))
+    const actionIds = new Set(knowledgeBase.actions.map((a) => a.id))
+    const conceptIds = new Set(knowledgeBase.concepts.map((c) => c.id))
+    const seen = new Set<string>()
+    for (const exercise of pendingExercises) {
+      if (seen.has(exercise.id)) problems.push(`${exercise.id}: id repetido`)
+      seen.add(exercise.id)
+      for (const id of exercise.categories) if (!categoryIds.has(id)) problems.push(`${exercise.id}: categoría ${id}`)
+      for (const id of exercise.actions) if (!actionIds.has(id)) problems.push(`${exercise.id}: acción ${id}`)
+      for (const id of exercise.uses) if (!conceptIds.has(id)) problems.push(`${exercise.id}: concepto ${id}`)
+      checkRefs(exercise.id, [exercise.from], problems)
+    }
+    expect(problems).toEqual([])
   })
 
   it('cada categoría tiene conceptos', () => {

@@ -70,6 +70,10 @@ export function buildKnowledgeBase({ categories, actions, sources }: BuildInput)
       for (const id of raw.actions) {
         if (!actionIds.has(id)) problems.push(`${where}: acción desconocida "${id}"`)
       }
+      for (const ref of raw.alsoIn ?? []) {
+        if (!ref.file || !ref.title || ref.sections.length === 0) problems.push(`${where}: referencia alsoIn incompleta`)
+        if (ref.file === source.file) problems.push(`${where}: alsoIn repite el archivo de su propia fuente`)
+      }
       if (raw.converts) {
         for (const id of [raw.converts.from, raw.converts.to]) {
           if (!categoryIds.has(id)) problems.push(`${where}: conversión con categoría desconocida "${id}"`)

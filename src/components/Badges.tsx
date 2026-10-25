@@ -1,5 +1,5 @@
 import { ArrowRight, NotebookPen } from 'lucide-react'
-import type { Category, ConceptKind, SourceInfo } from '../knowledge/model'
+import type { Category, ConceptKind, NoteRef, SourceInfo } from '../knowledge/model'
 import { accents, cx } from '../lib/accents'
 import { kindLabels } from './labels'
 
@@ -50,12 +50,23 @@ export function NotesBadge() {
   )
 }
 
-export function SourceTag({ source, sections }: { source: SourceInfo; sections: string[] }) {
-  const label = sections.length === 1 ? `pregunta ${sections[0]}` : `preguntas ${sections.join(', ')}`
+function sectionsLabel(sections: string[]): string {
+  return sections.length === 1 ? `pregunta ${sections[0]}` : `preguntas ${sections.join(', ')}`
+}
+
+export function SourceTag({ source, sections, also = [] }: { source: SourceInfo; sections: string[]; also?: NoteRef[] }) {
+  const files = [source.file, ...also.map((ref) => ref.file)].join('\n')
   return (
-    <span className="inline-flex items-center gap-1.5 text-xs text-ink-3" title={source.file}>
-      <NotebookPen className="size-3.5" aria-hidden />
-      Apuntes de {source.title} · {label}
+    <span className="inline-flex items-start gap-1.5 text-xs text-ink-3" title={files}>
+      <NotebookPen className="mt-px size-3.5 shrink-0" aria-hidden />
+      <span>
+        Apuntes de {source.title} · {sectionsLabel(sections)}
+        {also.map((ref) => (
+          <span key={ref.file} className="block">
+            También en {ref.title} · {sectionsLabel(ref.sections)}
+          </span>
+        ))}
+      </span>
     </span>
   )
 }
